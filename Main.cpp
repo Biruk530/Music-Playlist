@@ -473,3 +473,29 @@ int getValidInt() {
     }
     return value;
 }
+
+void displaySongs() {
+    if (!head) {
+        cout << "Playlist is empty.\n";
+        return;
+    }
+
+    cout << "\n=== CURRENT PLAYLIST (" << (isPlaying ? "PLAYING" : "STOPPED") << ") ===\n";
+    for (Node* temp = head; temp; temp = temp->next) {
+        cout << temp->song->id << ". " << temp->song->title
+             << " - " << temp->song->artist;
+
+        if (!temp->song->filePath.empty()) {
+            cout << " [Audio Available]";
+        }
+        if (!temp->song->lyrics.empty()) {
+            cout << " [Lyrics Available]";
+        }
+
+        if (temp == current) {
+            cout << (isPlaying ? " [NOW PLAYING]" : " [SELECTED]");
+            if (isPaused) cout << " (PAUSED)";
+        }
+        cout << endl;
+    }
+}
