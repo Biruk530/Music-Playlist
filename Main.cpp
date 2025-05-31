@@ -426,3 +426,21 @@ void addMultipleSongs(int count) {
     savePlaylist();
     cout << "\nAdded " << count << " songs!\n";
 }
+
+void playNext() {
+    if (!current) {
+        current = head;
+        if (current) playSong();
+        return;
+    }
+
+    if (current->next) {
+        current = current->next;
+        if (isPlaying) playSong();
+    } else if (repeatMode) {
+        current = head;
+        if (isPlaying) playSong();
+    } else {
+        cout << "End of playlist\n";
+    }
+}
