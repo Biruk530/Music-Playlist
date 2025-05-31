@@ -70,3 +70,45 @@ void stopPlayback() {
     isPlaying = false;
     isPaused = false;
 }
+void playSong() {
+    if (!current || current->song->filePath.empty()) {
+        cout << "No song selected or no audio file.\n";
+        return;
+    }
+
+    stopPlayback();
+
+    MCI_OPEN_PARMS openParms = {0};
+    openParms.lpstrDeviceType = "MPEGVideo";
+    openParms.lpstrElementName = current->song->filePath.c_str();
+
+    DWORD result = mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, (DWORD_PTR)&openParms);
+    if (result != 0) {
+        char errorMsg[256];
+        mciGetErrorString(result, errorMsg, 256);
+        cerr << "Error opening MP3 file '" << current->song->filePath << "': " << errorMsg << endl;
+        openParms.lpstrDeviceType = "WaveAudio";
+        result = mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, (DWORD_PTR)&openParms);
+        if (result != 0) {
+            mciGetErrorString(result, errorMsg, 256);
+            cerr << "Fallback to WaveAudio failed: " << errorMsg << endl;
+            return;
+        }
+    }
+
+    mciDevice = openParms.wDeviceID;
+
+    MCI_PLAY_PARMS playParams = {0};
+    result = mciSendCommand(mciDevice, MCI_PLAY, MCI_NOTIFY, (DWORD_PTR)&playParams);
+    if (result != 0) {
+        char errorMsg[256];
+        mciGetErrorString(result, errorMsg, 256);
+        cerr << "Error playing audio: " << errorMsg << endl;
+        stopPlayback();
+        return;
+    }
+
+    isPlaying = true;
+    isPaused = false;
+    cout << "Now playing: " << current->song->title << " (" << current->song->filePath << ")\n";
+}
