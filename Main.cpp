@@ -558,3 +558,48 @@ void deleteSong(int id) {
     savePlaylist();
     cout << "Song deleted successfully. IDs updated.\n";
 }
+
+void manageLyrics(int id) {
+    Node* temp = head;
+    while (temp && temp->song->id != id) {
+        temp = temp->next;
+    }
+
+    if (!temp) {
+        cout << "Song not found!\n";
+        return;
+    }
+
+    cout << "\nManaging lyrics for " << temp->song->title << " by " << temp->song->artist << "\n";
+    cout << "Current Lyrics:\n" << (temp->song->lyrics.empty() ? "No lyrics" : temp->song->lyrics) << endl;
+
+    string newLyrics;
+    cout << "Enter new lyrics (Enter to keep, or 'file' to load from file): ";
+    getline(cin, newLyrics);
+    if (newLyrics == "file") {
+        string lyricsPath;
+        cout << "Enter lyrics file path: ";
+        getline(cin, lyricsPath);
+        ifstream lyricsFile(lyricsPath);
+        if (lyricsFile.is_open()) {
+            string line;
+            newLyrics = "";
+            while (getline(lyricsFile, line)) {
+                newLyrics += line + "\n";
+            }
+            lyricsFile.close();
+            temp->song->lyrics = newLyrics;
+        } else {
+            cout << "Error: Could not open lyrics file. Keeping existing lyrics.\n";
+            return;
+        }
+    } else if (!newLyrics.empty()) {
+        temp->song->lyrics = newLyrics;
+    } else {
+        cout << "No changes made to lyrics.\n";
+        return;
+    }
+
+    savePlaylist();
+    cout << "Lyrics updated successfully!\n";
+}
