@@ -276,3 +276,57 @@ void addSong(string title, string artist, string path, string lyrics, bool saveF
     if (saveFile) savePlaylist();
     cout << "Song added successfully!\n";
 }
+
+void sortPlaylist() {
+    if (!head || !head->next) {
+        cout << "Not enough songs to sort.\n";
+        return;
+    }
+
+    cout << "Sort by:\n1. Title\n2. Artist\nChoice: ";
+    int choice = getValidInt();
+    cin.ignore();
+
+    vector<Song*> songs;
+    for (Node* temp = head; temp; temp = temp->next) {
+        songs.push_back(temp->song);
+    }
+
+    if (choice == 1) {
+        sort(songs.begin(), songs.end(), [](Song* a, Song* b) {
+            return a->title < b->title;
+        });
+        cout << "Playlist sorted by title!\n";
+    } else if (choice == 2) {
+        sort(songs.begin(), songs.end(), [](Song* a, Song* b) {
+            return a->artist < b->artist;
+        });
+        cout << "Playlist sorted by artist!\n";
+    } else {
+        cout << "Invalid choice. Sorting cancelled.\n";
+        return;
+    }
+
+    while (head) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+    head = tail = current = nullptr;
+
+    for (Song* song : songs) {
+        Node* newNode = new Node{song, tail, nullptr};
+        if (!head) head = newNode;
+        if (tail) tail->next = newNode;
+        tail = newNode;
+    }
+    int newId = 1;
+    for (Node* node = head; node; node = node->next) {
+        node->song->id = newId++;
+    }
+    nextId = newId;
+
+    if (head) current = head;
+
+    savePlaylist();
+}
