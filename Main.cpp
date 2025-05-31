@@ -134,3 +134,29 @@ void togglePause() {
         }
     }
 }
+// ========== PLAYLIST MANAGEMENT ==========
+void savePlaylist() {
+    ofstream file(playlistFile, ios::binary);
+    if (!file.is_open()) {
+        cerr << "Error saving playlist!\n";
+        return;
+    }
+
+    for (Node* temp = head; temp; temp = temp->next) {
+        size_t titleLen = temp->song->title.size();
+        size_t artistLen = temp->song->artist.size();
+        size_t pathLen = temp->song->filePath.size();
+        size_t lyricsLen = temp->song->lyrics.size();
+
+        file.write((char*)&temp->song->id, sizeof(int));
+        file.write((char*)&titleLen, sizeof(size_t));
+        file.write(temp->song->title.c_str(), titleLen);
+        file.write((char*)&artistLen, sizeof(size_t));
+        file.write(temp->song->artist.c_str(), artistLen);
+        file.write((char*)&pathLen, sizeof(size_t));
+        file.write(temp->song->filePath.c_str(), pathLen);
+        file.write((char*)&lyricsLen, sizeof(size_t));
+        file.write(temp->song->lyrics.c_str(), lyricsLen);
+    }
+    file.close();
+}
