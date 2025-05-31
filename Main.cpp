@@ -112,3 +112,25 @@ void playSong() {
     isPaused = false;
     cout << "Now playing: " << current->song->title << " (" << current->song->filePath << ")\n";
 }
+
+void togglePause() {
+    if (!mciDevice) {
+        cout << "No active playback.\n";
+        return;
+    }
+
+    if (isPaused) {
+        MCI_PLAY_PARMS playParams = {0};
+        DWORD result = mciSendCommand(mciDevice, MCI_PLAY, MCI_NOTIFY, (DWORD_PTR)&playParams);
+        if (result == 0) {
+            isPaused = false;
+            cout << "Playback resumed\n";
+        }
+    } else {
+        DWORD result = mciSendCommand(mciDevice, MCI_PAUSE, 0, 0);
+        if (result == 0) {
+            isPaused = true;
+            cout << "Playback paused\n";
+        }
+    }
+}
