@@ -634,3 +634,121 @@ void cleanUp() {
         delete temp;
     }
 }
+
+// ========== MAIN FUNCTION ==========
+int main() {
+    loadPlaylist();
+    srand(static_cast<unsigned>(time(0)));
+
+    int choice, id;
+    string title, artist, path, query;
+
+    do {
+        cout << "\n=== MP3 PLAYLIST MANAGER ===\n";
+        cout << "1.  Add Song\n2.  Add Multiple Songs\n3.  Delete Song\n";
+        cout << "4.  Update Song\n5.  Play/Pause\n6.  Stop\n";
+        cout << "7.  Next Song\n8.  Previous Song\n9.  Show Playlist\n";
+        cout << "10. Shuffle\n11. Search\n12. Toggle Repeat\n";
+        cout << "13. Manage Lyrics\n14. Display Lyrics\n15. Sort Playlist\n16. Exit\nChoice: ";
+        choice = getValidInt();
+        cin.ignore();
+
+        switch (choice) {
+            case 1: {
+                cout << "Title: "; getline(cin, title);
+                cout << "Artist: "; getline(cin, artist);
+                cout << "MP3 Path: "; getline(cin, path);
+                addSong(title, artist, path);
+                break;
+            }
+            case 2: {
+                cout << "How many songs to add? ";
+                int count = getValidInt();
+                cin.ignore();
+                addMultipleSongs(count);
+                break;
+            }
+            case 3: {displaySongs();
+                cout << "Enter song ID to delete: ";
+                id = getValidInt();
+                cin.ignore();
+                deleteSong(id);
+                break;
+            }
+            case 4: {displaySongs();
+                cout << "Enter song ID to update: ";
+                id = getValidInt();
+                cin.ignore();
+                updateSong(id);
+                break;
+            }
+            case 5: {
+                if (!current) current = head;
+                if (isPlaying) togglePause();
+                else playSong();
+                break;
+            }
+            case 6: {
+                stopPlayback();
+                break;
+            }
+            case 7: {
+                playNext();
+                break;
+            }
+            case 8: {
+                playPrevious();
+                break;
+            }
+            case 9: {
+                displaySongs();
+                break;
+            }
+            case 10: {
+                shufflePlaylist();
+                break;
+            }
+            case 11: {
+                cout << "Search query: ";
+                getline(cin, query);
+                searchSongs(query);
+                break;
+            }
+            case 12: {
+                repeatMode = !repeatMode;
+                cout << "Repeat mode " << (repeatMode ? "ON" : "OFF") << endl;
+                break;
+            }
+            case 13: {
+                cout << "Enter song ID to manage lyrics: ";
+                id = getValidInt();
+                cin.ignore();
+                manageLyrics(id);
+                break;
+            }
+            case 14: {
+                cout << "Enter song ID for lyrics (or 0 for current song): ";
+                id = getValidInt();
+                cin.ignore();
+                displayLyrics(id == 0 ? -1 : id);
+                break;
+            }
+            case 15: {
+                sortPlaylist();
+                displaySongs();
+                break;
+            }
+            case 16: {
+                cout << "Exiting...\n";
+                break;
+            }
+            default: {
+                cout << "Invalid choice!\n";
+                break;
+            }
+        }
+    } while (choice != 16);
+
+    cleanUp();
+    return 0;
+}
