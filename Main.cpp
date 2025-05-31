@@ -522,3 +522,39 @@ void shufflePlaylist() {
     savePlaylist();
     cout << "Playlist shuffled!\n";
 }
+void deleteSong(int id) {
+    Node* temp = head;
+    while (temp && temp->song->id != id) {
+        temp = temp->next;
+    }
+
+    if (!temp) {
+        cout << "Song not found!\n";
+        return;
+    }
+
+    if (temp == current) {
+        if (isPlaying || isPaused) {
+            stopPlayback();
+        }
+        current = nullptr;
+    }
+
+    if (temp->prev) temp->prev->next = temp->next;
+    if (temp->next) temp->next->prev = temp->prev;
+
+    if (temp == head) head = temp->next;
+    if (temp == tail) tail = temp->prev;
+
+    delete temp->song;
+    delete temp;
+
+    int newId = 1;
+    for (Node* node = head; node; node = node->next) {
+        node->song->id = newId++;
+    }
+    nextId = newId;
+
+    savePlaylist();
+    cout << "Song deleted successfully. IDs updated.\n";
+}
