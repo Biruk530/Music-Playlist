@@ -444,3 +444,21 @@ void playNext() {
         cout << "End of playlist\n";
     }
 }
+
+void playPrevious() {
+    if (!current) {
+        current = tail;
+        if (current) playSong();
+        return;
+    }
+
+    if (current->prev) {
+        current = current->prev;
+        if (isPlaying) playSong();
+    } else if (repeatMode) {
+        current = tail;
+        if (isPlaying) playSong();
+    } else {
+        cout << "Beginning of playlist\n";
+    }
+}
