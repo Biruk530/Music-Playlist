@@ -388,3 +388,18 @@ void updateSong(int id) {
     savePlaylist();
     cout << "Song updated successfully!\n";
 }
+
+void searchSongs(string query) {
+    cout << "Search Results:\n";
+    bool found = false;
+    for (Node* temp = head; temp; temp = temp->next) {
+        if (temp->song->title.find(query) != string::npos ||
+            temp->song->artist.find(query) != string::npos ||
+            temp->song->lyrics.find(query) != string::npos) {
+            cout << temp->song->id << ". " << temp->song->title
+                 << " - " << temp->song->artist << endl;
+            found = true;
+        }
+    }
+    if (!found) cout << "No matches found.\n";
+}
