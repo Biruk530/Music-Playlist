@@ -59,3 +59,14 @@ void displayLyrics(int id = -1);
 void cleanUp();
 int getValidInt();
 bool isValidArtistName(const string& artist);
+
+// ========== PLAYBACK CONTROL FUNCTIONS ==========
+void stopPlayback() {
+    if (mciDevice) {
+        mciSendCommand(mciDevice, MCI_STOP, 0, 0);
+        mciSendCommand(mciDevice, MCI_CLOSE, 0, 0);
+        mciDevice = 0;
+    }
+    isPlaying = false;
+    isPaused = false;
+}
