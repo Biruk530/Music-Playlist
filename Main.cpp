@@ -160,3 +160,68 @@ void savePlaylist() {
     }
     file.close();
 }
+// feature loadPlayList added by Bahiru
+void loadPlaylist() {
+    ifstream file(playlistFile, ios::binary);
+    if (!file.is_open()) {
+        cout << "No existing playlist found. Creating new one.\n";
+        return;
+    }
+
+    while (file.peek() != EOF) {
+        Song* s = new Song();
+        size_t titleLen, artistLen, pathLen, lyricsLen;
+
+        if (!file.read((char*)&s->id, sizeof(int))) {
+            delete s;
+            break;
+        }
+        if (s->id >= nextId) nextId = s->id + 1;
+
+        if (!file.read((char*)&titleLen, sizeof(size_t))) {
+            delete s;
+            break;
+        }
+        s->title.resize(titleLen);
+        if (!file.read(&s->title[0], titleLen)) {
+            delete s;
+            break;
+        }
+
+        if (!file.read((char*)&artistLen, sizeof(size_t))) {
+            delete s;
+            break;
+        }
+        s->artist.resize(artistLen);
+        if (!file.read(&s->artist[0], artistLen)) {
+            delete s;
+            break;
+        }
+
+        if (!file.read((char*)&pathLen, sizeof(size_t))) {
+            delete s;
+            break;
+        }
+        s->filePath.resize(pathLen);
+        if (!file.read(&s->filePath[0], pathLen)) {
+            delete s;
+            break;
+        }
+
+        if (!file.read((char*)&lyricsLen, sizeof(size_t))) {
+            delete s;
+            break;
+        }
+        s->lyrics.resize(lyricsLen);
+        if (!file.read(&s->lyrics[0], lyricsLen)) {
+            delete s;
+            break;
+        }
+
+        Node* newNode = new Node{s, tail, nullptr};
+        (head ? tail->next : head) = newNode;
+        tail = newNode;
+    }
+    current = head;
+    file.close();
+}
