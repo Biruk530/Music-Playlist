@@ -499,3 +499,26 @@ void displaySongs() {
         cout << endl;
     }
 }
+
+void shufflePlaylist() {
+    if (!head || !head->next) {
+        cout << "Not enough songs to shuffle.\n";
+        return;
+    }
+
+    vector<Song*> songs;
+    for (Node* temp = head; temp; temp = temp->next) {
+        songs.push_back(temp->song);
+    }
+
+    random_shuffle(songs.begin(), songs.end());
+
+    Node* temp = head;
+    for (auto song : songs) {
+        temp->song = song;
+        temp = temp->next;
+    }
+
+    savePlaylist();
+    cout << "Playlist shuffled!\n";
+}
