@@ -603,3 +603,24 @@ void manageLyrics(int id) {
     savePlaylist();
     cout << "Lyrics updated successfully!\n";
 }
+
+void displayLyrics(int id) {
+    Node* target = (id == -1) ? current : head;
+    if (id != -1) {
+        while (target && target->song->id != id) {
+            target = target->next;
+        }
+    }
+
+    if (!target) {
+        cout << "No song selected or song not found!\n";
+        return;
+    }
+
+    cout << "\nLyrics for " << target->song->title << " by " << target->song->artist << ":\n";
+    if (target->song->lyrics.empty()) {
+        cout << "No lyrics available.\n";
+    } else {
+        cout << target->song->lyrics << endl;
+    }
+}
