@@ -225,3 +225,54 @@ void loadPlaylist() {
     current = head;
     file.close();
 }
+
+void addSong(string title, string artist, string path, string lyrics, bool saveFile) {
+    if (!path.empty()) {
+        ifstream fileCheck(path);
+        if (!fileCheck.good() || path.substr(path.length() - 4) != ".mp3") {
+            cout << "Error: Invalid or inaccessible MP3 file path!\n";
+            return;
+        }
+        fileCheck.close();
+    }
+
+    string validatedArtist = artist;
+    while (!isValidArtistName(validatedArtist)) {
+        cout << "Error: Artist name must contain only letters and spaces (no numbers or symbols).\n";
+        cout << "Artist: ";
+        getline(cin, validatedArtist);
+    }
+
+    string finalLyrics = lyrics;
+    if (finalLyrics.empty()) {
+        string lyricsPath;
+        cout << "Enter lyrics file path (or press Enter for manual input): ";
+        getline(cin, lyricsPath);
+        if (!lyricsPath.empty()) {
+            ifstream lyricsFile(lyricsPath);
+            if (lyricsFile.is_open()) {
+                string line;
+                while (getline(lyricsFile, line)) {
+                    finalLyrics += line + "\n";
+                }
+                lyricsFile.close();
+            } else {
+                cout << "Error: Could not open lyrics file. Enter lyrics manually (or press Enter to skip): ";
+                getline(cin, finalLyrics);
+            }
+        } else {
+            cout << "Enter lyrics (or press Enter to skip): ";
+            getline(cin, finalLyrics);
+        }
+    }
+
+    Song* newSong = new Song{nextId++, validatedArtist, title, path, finalLyrics};
+    Node* newNode = new Node{newSong, tail, nullptr};
+
+    if (!head) head = newNode;
+    if (tail) tail->next = newNode;
+    tail = newNode;
+
+    if (saveFile) savePlaylist();
+    cout << "Song added successfully!\n";
+}
