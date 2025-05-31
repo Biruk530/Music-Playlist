@@ -403,3 +403,13 @@ void searchSongs(string query) {
     }
     if (!found) cout << "No matches found.\n";
 }
+
+bool isValidArtistName(const string& artist) {
+    if (artist.empty()) return false;
+    for (char c : artist) {
+        if (!isalpha(c) && c != ' ') {
+            return false;
+        }
+    }
+    return true;
+}
