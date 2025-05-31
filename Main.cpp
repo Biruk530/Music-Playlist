@@ -413,3 +413,16 @@ bool isValidArtistName(const string& artist) {
     }
     return true;
 }
+
+void addMultipleSongs(int count) {
+    for (int i = 0; i < count; i++) {
+        string title, artist, path;
+        cout << "\nSong #" << i+1 << ":\n";
+        cout << "Title: "; getline(cin, title);
+        cout << "Artist: "; getline(cin, artist);
+        cout << "MP3 Path: "; getline(cin, path);
+        addSong(title, artist, path, "", false);
+    }
+    savePlaylist();
+    cout << "\nAdded " << count << " songs!\n";
+}
