@@ -462,3 +462,14 @@ void playPrevious() {
         cout << "Beginning of playlist\n";
     }
 }
+
+// ========== UTILITY FUNCTIONS ==========
+int getValidInt() {
+    int value;
+    while (!(cin >> value)) {
+        cout << "Invalid input. Please enter a number: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    return value;
+}
