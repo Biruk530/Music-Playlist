@@ -624,3 +624,13 @@ void displayLyrics(int id) {
         cout << target->song->lyrics << endl;
     }
 }
+
+void cleanUp() {
+    stopPlayback();
+    while (head) {
+        Node* temp = head;
+        head = head->next;
+        delete temp->song;
+        delete temp;
+    }
+}
