@@ -330,3 +330,61 @@ void sortPlaylist() {
 
     savePlaylist();
 }
+
+void updateSong(int id) {
+    Node* temp = head;
+    while (temp && temp->song->id != id) {
+        temp = temp->next;
+    }
+
+    if (!temp) {
+        cout << "Song not found!\n";
+        return;
+    }
+
+    string newTitle, newArtist, newPath, newLyrics;
+    cout << "Current Title: " << temp->song->title << "\nNew Title (Enter to keep): ";
+    getline(cin, newTitle);
+    if (!newTitle.empty()) temp->song->title = newTitle;
+
+    cout << "Current Artist: " << temp->song->artist << "\nNew Artist (Enter to keep): ";
+    getline(cin, newArtist);
+    if (!newArtist.empty()) {
+        while (!isValidArtistName(newArtist)) {
+            cout << "Error: Artist name must contain only letters and spaces (no numbers or symbols).\n";
+            cout << "New Artist (Enter to keep): ";
+            getline(cin, newArtist);
+            if (newArtist.empty()) break;
+        }
+        if (!newArtist.empty()) temp->song->artist = newArtist;
+    }
+
+    cout << "Current Path: " << temp->song->filePath << "\nNew Path (Enter to keep): ";
+    getline(cin, newPath);
+    if (!newPath.empty()) temp->song->filePath = newPath;
+
+    cout << "Current Lyrics:\n" << (temp->song->lyrics.empty() ? "No lyrics" : temp->song->lyrics) << "\nNew Lyrics (Enter to keep, or 'file' to load from file): ";
+    getline(cin, newLyrics);
+    if (newLyrics == "file") {
+        string lyricsPath;
+        cout << "Enter lyrics file path: ";
+        getline(cin, lyricsPath);
+        ifstream lyricsFile(lyricsPath);
+        if (lyricsFile.is_open()) {
+            string line;
+            newLyrics = "";
+            while (getline(lyricsFile, line)) {
+                newLyrics += line + "\n";
+            }
+            lyricsFile.close();
+            temp->song->lyrics = newLyrics;
+        } else {
+            cout << "Error: Could not open lyrics file. Keeping existing lyrics.\n";
+        }
+    } else if (!newLyrics.empty()) {
+        temp->song->lyrics = newLyrics;
+    }
+
+    savePlaylist();
+    cout << "Song updated successfully!\n";
+}
