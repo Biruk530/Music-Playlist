@@ -76,6 +76,12 @@ void playSong() {
         return;
     }
 
+   void playSong() {
+    if (!current || current->song->filePath.empty()) {
+        cout << "No song selected or no audio file.\n";
+        return;
+    }
+
     stopPlayback();
 
     MCI_OPEN_PARMS openParms = {0};
@@ -111,6 +117,8 @@ void playSong() {
     isPlaying = true;
     isPaused = false;
     cout << "Now playing: " << current->song->title << " (" << current->song->filePath << ")\n";
+    // Automatically display lyrics for the current song
+    displayLyrics(-1); // -1 uses the current song pointer
 }
 
 void togglePause() {
