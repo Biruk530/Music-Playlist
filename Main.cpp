@@ -70,18 +70,19 @@ void stopPlayback() {
     isPlaying = false;
     isPaused = false;
 }
+}
 void playSong() {
     if (!current || current->song->filePath.empty()) {
         cout << "No song selected or no audio file.\n";
         return;
     }
-
+}
    void playSong() {
     if (!current || current->song->filePath.empty()) {
         cout << "No song selected or no audio file.\n";
         return;
     }
-
+   
     stopPlayback();
 
     MCI_OPEN_PARMS openParms = {0};
